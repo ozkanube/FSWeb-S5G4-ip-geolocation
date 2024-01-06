@@ -1,31 +1,30 @@
 //axios import buraya gelecek
+import axios from "axios";
 
 var benimIP;
-
 
 // ------------ değiştirmeyin --------------
 // licensed to Ergineer 2022
 require("babel-core/register");
 require("babel-polyfill");
-async function ipAdresimiAl(){
-	await axios({
-		method: 'get',
-		url: 'https://apis.ergineer.com/ipadresim',
-	})
-	.then(function (response) {
-		return response.data
-	})
-	.then(function (a) {
-		benimIP=a
-	});
-}				
+async function ipAdresimiAl() {
+  await axios({
+    method: "get",
+    url: "https://apis.ergineer.com/ipadresim",
+  })
+    .then(function (response) {
+      return response.data;
+    })
+    .then(function (a) {
+      benimIP = a;
+    });
+}
 // ------------ değiştirmeyin --------------
-
 
 /*
 	ADIM 1: axios kullanarak, aşağıdaki URL'ye GET sorgusu atacağız
     (tag içindeki yere kendi ipnizi yazarak URL'yi oluşturun):
-    https://apis.ergineer.com/ipgeoapi/<ipniz>
+    https://apis.ergineer.com/ipgeoapi/188.119.27.149
 	
 	NOT: Bilgisayarın IP adresini öğrenmek için: https://apis.ergineer.com/ipadresim 
 	ADIM 5'e gelene kadar fonksiyonunuzu test etmek için ip nizi URL'ye manuel olarak ekleyebilirsiniz.
@@ -67,6 +66,79 @@ async function ipAdresimiAl(){
 	Örnek dinamik URL kullanımı: var url = "https://apis.ergineer.com/ipgeoapi/"+benimIP; 
 */
 
-
-
 //kodlar buraya gelecek
+
+const data = {
+  sorgu: "188.119.27.149",
+  durum: "OK",
+  kıta: "Asia",
+  ülke: "Türkiye",
+  ülkeKodu: "TR",
+  ülkebayrağı: "https://apis.ergineer.com/ulkebayraklari/TR",
+  bölge: "07",
+  bölgeAdı: "Antalya",
+  şehir: "Antalya",
+  zip: "07100",
+  enlem: 36.87519999999999953388396534137427806854248046875,
+  boylam: 30.70720000000000027284841053187847137451171875,
+  saatdilimi: "Europe/Istanbul",
+  parabirimi: "TRY",
+  isp: "TurkNet Iletisim Hizmetleri A.S.",
+  organizasyon: "Antalya POP Dynamic",
+  as: "AS12735 TurkNet Iletisim Hizmetleri A.S.",
+};
+
+const geoInfo = (data) => {
+  const card = document.createElement("div");
+  card.setAttribute("class", "card");
+
+  const image = document.createElement("img");
+  image.setAttribute(
+    "src",
+    `https://flagsapi.com/${data.ülkeKodu}/flat/64.png`
+  );
+  card.append(image);
+
+  const div = document.createElement("div");
+  div.className = "card-info";
+  card.append(div);
+
+  const ip = document.createElement("h3");
+  ip.classList.add("ip");
+  ip.textContent = data.sorgu;
+  div.append(ip);
+
+  const p1 = document.createElement("p");
+  p1.setAttribute("class", "ulke");
+  p1.textContent = `${data.ülke} (${data.ülkeKodu})`;
+
+  const p2 = document.createElement("p");
+  p2.textContent = `Enlem: ${data.enlem} Boylam: ${data.boylam}`;
+
+  const p3 = document.createElement("p");
+  p3.textContent = `Şehir: ${data.şehir}`;
+
+  const p4 = document.createElement("p");
+  p4.textContent = `Saat dilimi: ${data.saatdilimi}`;
+
+  const p5 = document.createElement("p");
+  p5.textContent = `Para birimi: ${data.parabirimi}`;
+
+  const p6 = document.createElement("p");
+  p6.textContent = `ISP: ${data.isp}`;
+
+  div.append(p1, p2, p3, p4, p5, p6);
+
+  return card;
+};
+
+const getData = async () => {
+  await ipAdresimiAl();
+
+  axios.get(`https://apis.ergineer.com/ipgeoapi/${benimIP}`).then((res) => {
+    const card = geoInfo(res.data);
+    document.querySelector(".cards").append(card);
+  });
+};
+
+getData();
